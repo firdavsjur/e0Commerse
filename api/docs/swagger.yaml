@@ -1510,7 +1510,6 @@ paths:
       - description: promo_code
         in: query
         name: promo_code
-        required: true
         type: string
       produces:
       - application/json
@@ -1845,7 +1844,7 @@ paths:
       description: Create PromoCode
       operationId: create_promoCode
       parameters:
-      - description: CreatePromoCodeRequest
+      - description: DiscountType must be fixed or percent
         in: body
         name: promoCode
         required: true
@@ -2041,7 +2040,7 @@ paths:
       consumes:
       - application/json
       description: total_selled_staff
-      operationId: get_by_id_staff
+      operationId: get_by_id_staffsellet
       parameters:
       - description: id
         in: path

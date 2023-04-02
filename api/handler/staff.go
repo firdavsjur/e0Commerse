@@ -261,7 +261,7 @@ func (h *Handler) DeleteStaff(c *gin.Context) {
 }
 
 // total_selled_staff godoc
-// @ID get_by_id_staff
+// @ID get_by_id_staffsellet
 // @Router /report/staff-sale/{id} [GET]
 // @Summary total_selled_staff
 // @Description total_selled_staff

@@ -1938,8 +1938,7 @@ const docTemplate = `{
                         "type": "string",
                         "description": "promo_code",
                         "name": "promo_code",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -2716,7 +2715,7 @@ const docTemplate = `{
                 "operationId": "create_promoCode",
                 "parameters": [
                     {
-                        "description": "CreatePromoCodeRequest",
+                        "description": "DiscountType must be fixed or percent",
                         "name": "promoCode",
                         "in": "body",
                         "required": true,
@@ -3064,7 +3063,7 @@ const docTemplate = `{
                     "TotalSelledStaff"
                 ],
                 "summary": "total_selled_staff",
-                "operationId": "get_by_id_staff",
+                "operationId": "get_by_id_staffsellet",
                 "parameters": [
                     {
                         "type": "string",

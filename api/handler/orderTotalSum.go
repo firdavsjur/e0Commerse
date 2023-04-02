@@ -18,7 +18,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param order_id path string true "order_id"
-// @Param promo_code query string true "promo_code"
+// @Param promo_code query string false "promo_code"
 // @Success 200 {object} Response{data=string} "Success Request"
 // @Response 400 {object} Response{data=string} "Bad Request"
 // @Failure 500 {object} Response{data=string} "Server Error"

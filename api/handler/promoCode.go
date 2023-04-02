@@ -17,7 +17,7 @@ import (
 // @Tags PromoCode
 // @Accept json
 // @Produce json
-// @Param promoCode body models.CreatePromoCode true "CreatePromoCodeRequest"
+// @Param promoCode body models.CreatePromoCode true "DiscountType must be fixed or percent"
 // @Success 201 {object} Response{data=string} "Success Request"
 // @Response 400 {object} Response{data=string} "Bad Request"
 // @Failure 500 {object} Response{data=string} "Server Error"

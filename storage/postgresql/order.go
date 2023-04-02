@@ -427,6 +427,9 @@ func (r *orderRepo) Delete(ctx context.Context, req *models.OrderPrimaryKey) (in
 // ------------------------------------------------------------------------------------------------------------
 func (r *orderRepo) AddOrderItem(ctx context.Context, req *models.CreateOrderItem) error {
 	haveProducQuantity := 0
+	newOrderItemId := 0
+	var sellPrice float64
+	var listPrice float64
 	query := `
 		SELECT 
 		quantity
@@ -438,7 +441,44 @@ func (r *orderRepo) AddOrderItem(ctx context.Context, req *models.CreateOrderIte
 	if err != nil {
 		return errors.New("skladdan malumot olishda error")
 	}
-	fmt.Println(haveProducQuantity)
+	query = `
+	(
+		SELECT COALESCE(MAX(item_id), 0) + 1 FROM order_items WHERE order_id = $1
+	)
+	`
+	err = r.db.QueryRow(ctx, query, req.OrderId).Scan(
+		&newOrderItemId,
+	)
+	if err != nil {
+		return errors.New("skladdan malumot olishda error")
+	}
+
+	query = `
+		(
+			SELECT list_price*$1 FROM products where product_id=$2
+		)
+	`
+	err = r.db.QueryRow(ctx, query, req.Quantity, req.ProductId).Scan(
+		&listPrice,
+	)
+	if err != nil {
+		return errors.New("skladdan malumot olishda error")
+	}
+
+	query = `
+		(
+			
+				SELECT (list_price*$1)*(1-$2) FROM products where product_id=$3
+			
+		)
+	`
+	err = r.db.QueryRow(ctx, query, req.Quantity, req.Discount, req.ProductId).Scan(
+		&sellPrice,
+	)
+	if err != nil {
+		return errors.New("skladdan malumot olishda error")
+	}
+
 	if haveProducQuantity >= req.Quantity {
 		query = `
 		INSERT INTO order_items(
@@ -452,25 +492,17 @@ func (r *orderRepo) AddOrderItem(ctx context.Context, req *models.CreateOrderIte
 			store_id
 		)
 		VALUES (
-			$1, 
-			(
-				SELECT COALESCE(MAX(item_id), 0) + 1 FROM order_items WHERE order_id = $1
-			)
-			, $2, $3, 
-			(
-				SELECT list_price*$3 FROM products where product_id=$2
-			)
-			, $4,
-			(
-				SELECT (list_price*$3)*(1-$4) FROM products where product_id=$2
-			),$5
+			$1,$2,$3,$4,$5,$6,$7,$8
 		)
 	`
 		_, err = r.db.Exec(ctx, query,
 			req.OrderId,
+			newOrderItemId,
 			req.ProductId,
 			req.Quantity,
+			listPrice,
 			req.Discount,
+			sellPrice,
 			req.StoreId,
 		)
 		fmt.Println(query)
@@ -535,8 +567,8 @@ func (r *orderRepo) TotalOrderSum(ctx context.Context, req *models.TotalOrderSum
 		&order_limit_price,
 	)
 	if err != nil {
-		log.Println("Promocode Data error")
-		return nil, "promocode mavjud emas", errors.New("PromoCode doesnt exist")
+		log.Println("Promocode didnt work")
+
 	}
 	query = `
 		SELECT
